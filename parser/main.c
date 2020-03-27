@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
 
 // this is an example of how to define output strings corresponding to 
 // different ast node state that is used by the print_ast_node function:
-static char *t_strings[] = {"int", "char", "if", "num", "DONE"};
+static char *t_strings[] = {"int", "char", "if", "num", "and", "assign", "break",",", "/", "else", "eq", "not", "for", "id", "DONE"};
 
 static char *non_term_strings[] = {"program", "vardecs"};
 
@@ -70,8 +70,13 @@ void print_my_ast_node(ast_info *t) {
   if(t != NULL) {
     if((t->token >= STARTTOKEN) && (t->token <= ENDTOKEN)) {
 
-      printf("%s", t_strings[(t->token - STARTTOKEN)]);
-
+      printf("%s", t_strings[(t->token) - STARTTOKEN-1]);
+      if(t->token == NUM) {
+        printf(".%d", t -> value);
+      }
+      if(t->token == ID) {
+        printf(".%s", t -> lexeme);
+      }
     }
     else if ((t->token == NONTERMINAL)) {
        if((t->grammar_symbol >= START_AST_SYM) 

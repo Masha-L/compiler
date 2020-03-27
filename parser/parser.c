@@ -82,14 +82,14 @@ void parse(FILE *fd)  {
   }
   lookahead = lexan(fd);
   program(fd, ast_tree.root);  // program corresponds to the start state
-  /*
+  
   // the last token should be DONE
   if (lookahead != DONE) {
     parser_error("expected end of file");   
   } else {
      match(DONE, fd);
   }
-  */
+  
 
 }
 /**************************************************************************/
@@ -111,14 +111,30 @@ static void program(FILE *fd, ast_node *parent) {
   printf("program\n");
   switch( lookahead ) {
     case INT:
+    {
+      ast_info *s = create_new_ast_node_info(lookahead, 0, 0, 0, 0);
+      ast_node *n = create_ast_node(s);
+      add_child_node(parent, n);
       match(INT, fd);
+      ast_info *s1 = create_new_ast_node_info(ID, 0, 0, lexbuf, 0);
+      ast_node *n1 = create_ast_node(s1);
+      add_child_node(n, n1);
       match(ID, fd);
       program_1(fd, parent);
+    }
     break;
     case CHAR:
+    {
+      ast_info *s = create_new_ast_node_info(CHAR, 0, 0, 0, 0);
+      ast_node *n = create_ast_node(s);
+      add_child_node(parent, n);
       match(CHAR, fd);
+      ast_info *s1 = create_new_ast_node_info(ID, 0, 0, lexbuf, 0);
+      ast_node *n1 = create_ast_node(s1);
+      add_child_node(n, n1);
       match(ID, fd);
       program_1(fd, parent);
+    }
     break;
     default:
       parser_error("Your program starts with invalid symbol");
@@ -131,19 +147,28 @@ static void program(FILE *fd, ast_node *parent) {
 }
 
 static void program_1(FILE *fd, ast_node *parent) {
-    printf("program1\n");
+  printf("program1\n");
+  ast_node **childlist = get_childlist(parent);
+  int num_child = get_num_children(parent);
+  ast_node **childlist1 = get_childlist(childlist[num_child-1]);
+  int num_child1 = get_num_children(childlist[num_child-1]);
   switch( lookahead ) {
     case SEMIC:
       match(SEMIC, fd);
       program(fd, parent);
     break;
     case LBRACKET:
+    {
       match(LBRACKET, fd);
+      ast_info *s1 = create_new_ast_node_info(NUM, tokenval, 0, 0, 0);
+      ast_node *n1 = create_ast_node(s1);
+      add_child_node(childlist1[num_child1-1], n1);
       match(NUM, fd);
       match(RBRACKET, fd);
       match(SEMIC, fd);
       program(fd, parent);
     break;
+    }
     default:
       program_2(fd, parent);
     break;
@@ -151,7 +176,7 @@ static void program_1(FILE *fd, ast_node *parent) {
 }
 
 static void program_2(FILE *fd, ast_node *parent) {
-    printf("program2\n");
+  printf("program2\n");
 
   switch( lookahead ) {
     case LPAREN: 
@@ -174,6 +199,7 @@ static void fdl1(FILE *fd, ast_node *parent) {
 }
 
 static void fdl(FILE *fd, ast_node *parent) {
+  printf("fdl\n");
   switch( lookahead ) {
     case INT:
       match(INT, fd); 
@@ -237,6 +263,7 @@ static void pdl2(FILE *fd, ast_node *parent) {
 }
 
 static void block(FILE *fd, ast_node *parent) {
+  printf("block\n");
   vdl(fd, parent);
   stmt_list(fd, parent);
 }
@@ -279,11 +306,13 @@ static void vdl1(FILE *fd, ast_node *parent) {
 }
 
 static void stmt_list(FILE *fd, ast_node *parent) {
+  printf("stmt_list\n");
   stmt(fd, parent);
   stmt_list1(fd, parent);
 }
 
 static void stmt(FILE *fd, ast_node *parent) {
+  printf("stmt\n");
   switch( lookahead ) {
     case SEMIC:
       match(SEMIC, fd);
@@ -332,12 +361,14 @@ static void stmt(FILE *fd, ast_node *parent) {
       block(fd,parent);
       break;
     default:
-      parser_error("invalid begining of a statement");
+      expr(fd, parent);
+      match(SEMIC, fd);
       break;
   }
 }
 
 static void stmt_list1(FILE *fd, ast_node *parent) {
+  printf("stmt_list1\n");
   switch( lookahead ) {
     case RBRACE:
       match(RBRACE, fd);
@@ -349,11 +380,13 @@ static void stmt_list1(FILE *fd, ast_node *parent) {
 }
 
 static void expr(FILE *fd, ast_node *parent) {
+  printf("expr\n");
   e1(fd, parent);
   e0_p(fd, parent);
 }
 
 static void e0_p(FILE *fd, ast_node *parent) {
+  printf("e0_p\n");
   switch (lookahead){
     case ASSIGN:
       match(ASSIGN, fd);
@@ -365,11 +398,13 @@ static void e0_p(FILE *fd, ast_node *parent) {
 }
 
 static void e1(FILE *fd, ast_node *parent) {
+  printf("e1\n");
   e2(fd,parent);
   e1_p(fd, parent);
 }
 
 static void e1_p(FILE *fd, ast_node *parent) {
+  printf("e1_p\n");
   switch( lookahead ){
     case OR: 
       match(OR, fd);
@@ -382,11 +417,13 @@ static void e1_p(FILE *fd, ast_node *parent) {
 }
 
 static void e2(FILE *fd, ast_node *parent) {
+  printf("e2\n");
   e3(fd,parent);
   e2_p(fd,parent);
 }
 
 static void e2_p(FILE *fd, ast_node *parent) {
+  printf("e2_p\n");
   switch( lookahead ){
     case AND: 
       match(AND, fd);
@@ -399,11 +436,13 @@ static void e2_p(FILE *fd, ast_node *parent) {
 }
 
 static void e3(FILE *fd, ast_node *parent) {
+  printf("e3\n");
   e4(fd,parent);
   e3_p(fd, parent);
 }
 
 static void e3_p(FILE *fd, ast_node *parent) {
+  printf("e3_p\n");
   switch( lookahead ){
     case EQ: 
       match(EQ, fd);
@@ -421,12 +460,14 @@ static void e3_p(FILE *fd, ast_node *parent) {
 }
 
 static void e4(FILE *fd, ast_node *parent) {
+  printf("e4\n");
   e5(fd, parent);
   e4_p(fd, parent);
 }
 
 
 static void e4_p(FILE *fd, ast_node *parent) {
+  printf("e4_p\n");
   switch( lookahead ){
     case LESS: 
       match(LESS, fd);
@@ -454,12 +495,14 @@ static void e4_p(FILE *fd, ast_node *parent) {
 }
 
 static void e5(FILE *fd, ast_node *parent) {
+  printf("e5\n");
   e6(fd,parent);
   e5_p(fd, parent);
 }
 
 static void e5_p(FILE *fd, ast_node *parent) {
-switch( lookahead ){
+  printf("e5_p\n");
+  switch( lookahead ){
     case PLUS: 
       match(PLUS, fd);
       e6(fd,parent);
@@ -476,12 +519,14 @@ switch( lookahead ){
 }
 
 static void e6(FILE *fd, ast_node *parent) {
+  printf("e6\n");
   e7(fd,parent);
   e6_p(fd,parent);
 }
 
 static void e6_p(FILE *fd, ast_node *parent) {
-switch( lookahead ){
+  printf("e6_p\n");
+  switch( lookahead ){
     case STAR: 
       match(STAR, fd);
       e7(fd,parent);
@@ -498,6 +543,7 @@ switch( lookahead ){
 }
 
 static void e7(FILE *fd, ast_node *parent) {
+  printf("e7\n");
   switch(lookahead) {
     case NOT:
       match(NOT, fd);
@@ -514,7 +560,8 @@ static void e7(FILE *fd, ast_node *parent) {
 }
 
 static void e8(FILE *fd, ast_node *parent) {
-    switch(lookahead) {
+  printf("e8\n");
+  switch(lookahead) {
     case NUM:
       match(NUM, fd);
     break;
@@ -534,7 +581,8 @@ static void e8(FILE *fd, ast_node *parent) {
 }
 
 static void e8_p(FILE *fd, ast_node *parent) {
-    switch( lookahead ) {
+  printf("e8_p\n");
+  switch( lookahead ) {
     case LPAREN:
       match(LPAREN, fd);
       expr_list(fd, parent);
@@ -551,6 +599,7 @@ static void e8_p(FILE *fd, ast_node *parent) {
 }
 
 static void expr_list(FILE *fd, ast_node *parent) {
+  printf("expr_list\n");
   switch(lookahead) {
     case MINUS: case NOT: 
     case LPAREN: case ID: case NUM:
@@ -564,6 +613,7 @@ static void expr_list(FILE *fd, ast_node *parent) {
 
 
 static void expr_list_p(FILE *fd, ast_node *parent) {
+  printf("expr_list_p\n");
   switch(lookahead) {
     case COMMA:
       match(COMMA, fd);
@@ -578,6 +628,8 @@ static void match(tokenT token, FILE *fd) {
   if(token != lookahead) {
       parser_error("Expected a different value");
   }
-  lookahead = lexan(fd);
+  printf("MATCH: ");
+  lexer_emit(lookahead, tokenval);
+  lookahead = lexan(fd);  
 }
 

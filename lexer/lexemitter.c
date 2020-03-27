@@ -6,8 +6,8 @@
 //
 void lexer_emit(int t, int tval) {  
   switch(t) {
-    case PERIOD:
-      printf("PERIOD\n"); 
+    case DONE:
+      printf("DONE\n"); 
       break;
     case CHAR:
       printf("CHAR\n"); 

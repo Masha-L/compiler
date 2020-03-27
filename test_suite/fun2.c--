@@ -1,3 +1,12 @@
+int y;
+char ch;
+int main() {
+  int x;
+  int y;
+  x = 5 - 8 / 4;
+  write x;
+}
+
 int add3(int a, int b, int c) {
   return a+b+c;
 }

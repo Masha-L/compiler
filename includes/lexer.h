@@ -35,7 +35,9 @@
 // either use an enumerated type def or #defines to define token values:
 // (i.e. use IF in your code rather than 3 for the token value of keyword if)
 typedef enum {
-              INT, CHAR,        // types
+              STARTTOKEN,
+              INT, 
+              CHAR,        // types
               IF,               // keyword
               NUM,              // integer literal
               AND, 				// &&					

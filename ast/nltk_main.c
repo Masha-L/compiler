@@ -22,6 +22,11 @@
 #define TOKEN7  7 
 #define TOKEN8  8 
 #define TOKEN9  9 
+#define TOKEN10 10
+#define TOKEN11 11
+#define TOKEN12 12
+#define TOKEN13 13
+
 
 #define NONTERM 100 
 #define PROGRAM 101

@@ -356,8 +356,8 @@ static void stmt(FILE *fd, ast_node *parent) {
       match(RPAREN, fd);
       stmt(fd, parent);
       break;
-    case LBRACKET:
-      match(LBRACKET, fd);
+    case LBRACE:
+      match(LBRACE, fd);
       block(fd,parent);
       break;
     default:

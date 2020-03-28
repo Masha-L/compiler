@@ -106,6 +106,7 @@ int lexan(FILE *fd) {
         continue;
       case '\n':
       case ' ':
+      case '\t':
         continue;
       default:
         return getKeyOrID(c, fd);
@@ -172,6 +173,18 @@ static int getDig(char c, FILE * fd) {
     int a = c - 48;
     if(c=='\'') {
       a = fgetc(fd);
+      if(a == '\\') {
+        a = fgetc(fd);
+        switch(a){
+          case 'n': 
+            a = '\n';
+            break;
+          case 't':
+            a = '\t';
+            break;
+        }
+        src_charno += 1;
+      }
       if (fgetc(fd) != '\'') {
         return LEXERROR;
       }

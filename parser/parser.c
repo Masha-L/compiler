@@ -48,7 +48,8 @@ static void e4_p(FILE *fd, ast_node *parent);
 static void e5_p(FILE *fd, ast_node *parent);
 static void e6_p(FILE *fd, ast_node *parent);
 static void e8_p(FILE *fd, ast_node *parent);
-
+static ast_node * new_node(int token, int value, int grammar_sym,
+                                  char * lexeme, int line_no);
 
 tokenT lookahead;  // stores next token returned by lexer
                 // you may need to change its type to match your implementation
@@ -109,30 +110,53 @@ static void parser_error(char *err_string) {
  */
 static void program(FILE *fd, ast_node *parent) {
   printf("program\n");
+  ast_node *child = NULL;
   switch( lookahead ) {
     case INT:
     {
-      ast_info *s = create_new_ast_node_info(lookahead, 0, 0, 0, 0);
-      ast_node *n = create_ast_node(s);
-      add_child_node(parent, n);
+      ast_node *type = new_node(lookahead, 0, 0, 0, 0);
       match(INT, fd);
-      ast_info *s1 = create_new_ast_node_info(ID, 0, 0, lexbuf, 0);
-      ast_node *n1 = create_ast_node(s1);
-      add_child_node(n, n1);
+      ast_node *id = new_node(lookahead, 0, 0, lexbuf, 0);
       match(ID, fd);
-      program_1(fd, parent);
+      if(lookahead == LPAREN) {
+        child = new_node(NONTERMINAL,0, FUNC_DEC,0,0);
+        add_child_node(parent, child);
+        add_child_node(child, type);
+        add_child_node(child, id);
+      }
+      else if(lookahead == LBRACKET || lookahead == SEMIC) {
+        child = new_node(NONTERMINAL,0, VAR_DEC,0,0);
+        add_child_node(parent, child);
+        add_child_node(child, type);
+        add_child_node(child, id);
+      }
+      else {
+        parser_error("ERROR");
+      }
+      program_1(fd, child);
     }
     break;
     case CHAR:
     {
-      ast_info *s = create_new_ast_node_info(CHAR, 0, 0, 0, 0);
-      ast_node *n = create_ast_node(s);
-      add_child_node(parent, n);
+      ast_node *type = new_node(lookahead, 0, 0, 0, 0);
       match(CHAR, fd);
-      ast_info *s1 = create_new_ast_node_info(ID, 0, 0, lexbuf, 0);
-      ast_node *n1 = create_ast_node(s1);
-      add_child_node(n, n1);
+      ast_node *id = new_node(lookahead, 0, 0, lexbuf, 0);
       match(ID, fd);
+      if(lookahead == LPAREN) {
+        child = new_node(NONTERMINAL,0, FUNC_DEC,0,0);
+        add_child_node(parent, child);
+        add_child_node(child, type);
+        add_child_node(child, id);
+      }
+      else if(lookahead == LBRACKET || lookahead == SEMIC) {
+        child = new_node(NONTERMINAL,0, VAR_DEC,0,0);
+        add_child_node(parent, child);
+        add_child_node(child, type);
+        add_child_node(child, id);
+      }
+      else {
+        parser_error("ERROR");
+      }
       program_1(fd, parent);
     }
     break;
@@ -141,17 +165,13 @@ static void program(FILE *fd, ast_node *parent) {
       break;
   }
 
-  // assert is useful for testing a function's pre and post conditions 
-  assert(parent->symbol->token == NONTERMINAL);
-  assert(parent->symbol->grammar_symbol == ROOT);
+  // // assert is useful for testing a function's pre and post conditions 
+  // assert(parent->symbol->token == NONTERMINAL);
+  // assert(parent->symbol->grammar_symbol == ROOT);
 }
 
 static void program_1(FILE *fd, ast_node *parent) {
   printf("program1\n");
-  ast_node **childlist = get_childlist(parent);
-  int num_child = get_num_children(parent);
-  ast_node **childlist1 = get_childlist(childlist[num_child-1]);
-  int num_child1 = get_num_children(childlist[num_child-1]);
   switch( lookahead ) {
     case SEMIC:
       match(SEMIC, fd);
@@ -160,9 +180,6 @@ static void program_1(FILE *fd, ast_node *parent) {
     case LBRACKET:
     {
       match(LBRACKET, fd);
-      ast_info *s1 = create_new_ast_node_info(NUM, tokenval, 0, 0, 0);
-      ast_node *n1 = create_ast_node(s1);
-      add_child_node(childlist1[num_child1-1], n1);
       match(NUM, fd);
       match(RBRACKET, fd);
       match(SEMIC, fd);
@@ -177,7 +194,6 @@ static void program_1(FILE *fd, ast_node *parent) {
 
 static void program_2(FILE *fd, ast_node *parent) {
   printf("program2\n");
-
   switch( lookahead ) {
     case LPAREN: 
       match(LPAREN, fd);
@@ -633,3 +649,10 @@ static void match(tokenT token, FILE *fd) {
   lookahead = lexan(fd);  
 }
 
+
+static ast_node * new_node(int token, int value, int grammar_sym,
+                                  char * lexeme, int line_no) {
+  ast_info *s = create_new_ast_node_info(token, value, grammar_sym, lexeme, line_no);
+  ast_node *n = create_ast_node(s);
+  return n;
+}

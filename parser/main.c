@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
 // different ast node state that is used by the print_ast_node function:
 static char *t_strings[] = {"int", "char", "if", "num", "and", "assign", "break",",", "/", "else", "eq", "not", "for", "id", "DONE"};
 
-static char *non_term_strings[] = {"program", "vardecs"};
+static char *non_term_strings[] = {"program", "vardecs", "funcdec", "vardec"};
 
 //
 // This is the function that is passed to print_ast, to print information

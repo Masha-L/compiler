@@ -16,11 +16,6 @@ int a1[10];
 
 int foo(int a[], int x, int y) {
     a[x] = a[y] + a[y];  
-    int iff = 0;
-    while(iff == 0 && iff != 5) {
-      iff++;
-      break;
-    }  
 }
 
 int grr(int a[], int x, int y) {

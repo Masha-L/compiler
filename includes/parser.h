@@ -35,7 +35,9 @@
 #define START_AST_SYM 401       // used to specify start of valid range
 #define ROOT          401       // the root ast node 
 #define VAR_DEC_LIST  402       // a list of variable declarations
-#define END_AST_SYM   402       // used to specify end of valid range
+#define FUNC_DEC	  403       // a list of variable declarations
+#define VAR_DEC 	  404
+#define END_AST_SYM   404       // used to specify end of valid range
 
 
 // add global variable definitions: 

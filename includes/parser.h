@@ -37,7 +37,12 @@
 #define VAR_DEC_LIST  402       // a list of variable declarations
 #define FUNC_DEC	  403       // a list of variable declarations
 #define VAR_DEC 	  404
-#define END_AST_SYM   404       // used to specify end of valid range
+#define PARAM_LIST	  405
+#define PAR_DEC		  406
+#define BLOCK		  407
+#define STAT_LIST	  408
+#define STAT 		  409
+#define END_AST_SYM   409       // used to specify end of valid range
 
 
 // add global variable definitions: 

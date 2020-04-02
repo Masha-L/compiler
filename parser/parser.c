@@ -17,15 +17,15 @@ static void program(FILE *fd, ast_node *parent);
 static void parser_error(char *err_string);
 static void match(tokenT token, FILE* fd);
 static void program_1(FILE *fd, ast_node *parent, ast_node *sibling);
-static void program_2(FILE *fd, ast_node *parent);
-static void fdl1(FILE *fd, ast_node *parent);
+static void program_2(FILE *fd, ast_node *parent, ast_node *sibling);
+static void fdl1(FILE *fd, ast_node *parent, ast_node *sibling);
 static void fdl(FILE *fd, ast_node *parent);
 static void pdl(FILE *fd, ast_node *parent);
-static void pdl1(FILE *fd, ast_node *parent);
+static void pdl1(FILE *fd, ast_node *parent, ast_node *sibling);
 static void pdl2(FILE *fd, ast_node *parent);
 static void block(FILE *fd, ast_node *parent);
 static void vdl(FILE *fd, ast_node *parent);
-static void vdl1(FILE *fd, ast_node *parent);
+static void vdl1(FILE *fd, ast_node *parent, ast_node *sibling);
 static void stmt_list(FILE *fd, ast_node *parent);
 static void stmt(FILE *fd, ast_node *parent);
 static void stmt_list1(FILE *fd, ast_node *parent);
@@ -192,17 +192,17 @@ static void program_1(FILE *fd, ast_node *parent, ast_node *sibling) {
     break;
     }
     default:
-      program_2(fd, parent);
+      program_2(fd, parent, sibling);
     break;
   }
 }
 
-static void program_2(FILE *fd, ast_node *parent) {
+static void program_2(FILE *fd, ast_node *parent, ast_node *sibling) {
   printf("program2\n");
   switch( lookahead ) {
     case LPAREN: 
       match(LPAREN, fd);
-      fdl1(fd, parent);
+      fdl1(fd, parent, sibling);
       break;
     default:
       parser_error("Expected \"(\"");
@@ -210,29 +210,44 @@ static void program_2(FILE *fd, ast_node *parent) {
   }
 }
 
-static void fdl1(FILE *fd, ast_node *parent) {
+static void fdl1(FILE *fd, ast_node *parent, ast_node *sibling) {
   printf("fdl1\n");
-  pdl(fd, parent);
+  ast_node * param_list = new_node(NONTERMINAL,0, PARAM_LIST,0,0);
+  pdl(fd, param_list);
+  if(get_num_children(param_list)> 0) {
+      add_child_node(sibling, param_list);
+  }
   match(RPAREN, fd);
   match(LBRACE, fd);
-  block(fd, parent);
+  ast_node * block_dec = new_node(NONTERMINAL,0, BLOCK,0,0);
+  block(fd, block_dec);
+  if(get_num_children(block_dec)> 0) {
+      add_child_node(sibling, block_dec);
+  }
   fdl(fd, parent);
 }
 
 static void fdl(FILE *fd, ast_node *parent) {
   printf("fdl\n");
+  ast_node *child = NULL;
   switch( lookahead ) {
     case INT:
       match(INT, fd); 
+      ast_node *type = new_node(INT, 0, 0, 0, 0);
+      ast_node *id = new_node(lookahead, 0, 0, lexbuf, 0);
       match(ID, fd);
+      child = new_node(NONTERMINAL,0, FUNC_DEC,0,0);
+      add_child_node(parent, child);
+      add_child_node(child, type);
+      add_child_node(child, id);
       match(LPAREN, fd);
-      fdl1(fd, parent);
+      fdl1(fd, parent, child);
       break;
     case CHAR:
       match(CHAR, fd); 
       match(ID, fd);
       match(LPAREN, fd);
-      fdl1(fd, parent);
+      fdl1(fd, parent, child);
       break;      
     default:
       break;
@@ -241,30 +256,53 @@ static void fdl(FILE *fd, ast_node *parent) {
 
 static void pdl(FILE *fd, ast_node *parent) {
   printf("pdl\n");
+  ast_node *child = NULL;
   switch( lookahead ) {
     case INT: 
-      match(INT, fd); 
+    {
+      child = new_node(NONTERMINAL,0, PAR_DEC,0,0);
+      ast_node *type = new_node(lookahead, 0, 0, 0, 0);
+      match(INT, fd);
+      add_child_node(child, type);
+      ast_node *id = new_node(lookahead, 0, 0, lexbuf, 0);
       match(ID, fd);
-      pdl1(fd, parent);
+      add_child_node(child, id);
+      pdl1(fd, parent, child);
+      add_child_node(parent, child);
       break;
+    }
     case CHAR:
+    {
+      child = new_node(NONTERMINAL,0, PAR_DEC,0,0);
+      ast_node *type = new_node(lookahead, 0, 0, 0, 0);
       match(CHAR, fd); 
+      add_child_node(child, type);
+      ast_node *id = new_node(lookahead, 0, 0, lexbuf, 0);
       match(ID, fd);
-      pdl1(fd, parent);
-      break;      
+      add_child_node(child, id);
+      pdl1(fd, parent, child);
+      add_child_node(parent, child);
+      break; 
+    }     
     default:
       break;
   }
 }
 
-static void pdl1(FILE *fd, ast_node *parent) {
+static void pdl1(FILE *fd, ast_node *parent, ast_node *sibling) {
   printf("pdl1\n");
   switch( lookahead ) {
     case LBRACKET:
-      match(LBRACKET, fd);
-      match(RBRACKET, fd);
-      pdl2(fd, parent);
+      {      
+        ast_node * lb = new_node(lookahead, 0, 0, 0, 0);
+        match(LBRACKET, fd);
+        ast_node * rb = new_node(lookahead, 0, 0, 0, 0);
+        match(RBRACKET, fd);
+        add_child_node(sibling, lb);
+        add_child_node(sibling, rb);
+        pdl2(fd, parent);
       break;
+    }
     default:
       pdl2(fd, parent);
       break;
@@ -286,28 +324,49 @@ static void pdl2(FILE *fd, ast_node *parent) {
 static void block(FILE *fd, ast_node *parent) {
   printf("block\n");
   vdl(fd, parent);
-  stmt_list(fd, parent);
+  ast_node * stat_list = new_node(NONTERMINAL,0, STAT_LIST,0,0);
+  stmt_list(fd, stat_list);
+  if(get_num_children(stat_list)> 0) {
+      add_child_node(parent, stat_list);
+  }
 }
 
 static void vdl(FILE *fd, ast_node *parent) {
   printf("vdl\n");
+  ast_node *child = NULL;
   switch( lookahead ) {
     case INT:
+    {
+      child = new_node(NONTERMINAL,0, VAR_DEC,0,0);
+      ast_node *type = new_node(lookahead, 0, 0, 0, 0);
       match(INT, fd);
+      add_child_node(child, type);
+      ast_node *id = new_node(lookahead, 0, 0, lexbuf, 0);
       match(ID, fd);
-      vdl1(fd, parent);
-      break;     
-    case CHAR:
-      match(CHAR, fd);
-      match(ID, fd);
-      vdl1(fd, parent);
+      add_child_node(child, id);
+      add_child_node(parent, child);
+      vdl1(fd, parent, child);
       break;
+    }    
+    case CHAR:
+    {
+      child = new_node(NONTERMINAL,0, VAR_DEC,0,0);
+      ast_node *type = new_node(lookahead, 0, 0, 0, 0);
+      match(CHAR, fd);
+      add_child_node(child, type);
+      ast_node *id = new_node(lookahead, 0, 0, lexbuf, 0);
+      match(ID, fd);
+      add_child_node(child, id);
+      add_child_node(parent, child);
+      vdl1(fd, parent, child);
+      break;
+    }
     default:
       break;
   }
 }
 
-static void vdl1(FILE *fd, ast_node *parent) {
+static void vdl1(FILE *fd, ast_node *parent, ast_node *sibling) {
   printf("vdl1\n");
   switch( lookahead ) {
     case SEMIC:
@@ -315,12 +374,20 @@ static void vdl1(FILE *fd, ast_node *parent) {
       vdl(fd, parent);
       break;
     case LBRACKET:
+    {
+      ast_node * lb = new_node(lookahead, 0, 0, 0, 0);
       match(LBRACKET, fd);
+      add_child_node(sibling, lb);
+      ast_node * size = new_node(lookahead, tokenval, 0, 0, 0);
       match(NUM, fd);
+      add_child_node(sibling, size);
+      ast_node * rb = new_node(lookahead, 0, 0, 0, 0);
       match(RBRACKET, fd);
+      add_child_node(sibling, rb);      
       match(SEMIC, fd);
       vdl(fd, parent);
       break;
+    }
     default:
       parser_error("VDL1: should end here.");
   }
@@ -334,52 +401,91 @@ static void stmt_list(FILE *fd, ast_node *parent) {
 
 static void stmt(FILE *fd, ast_node *parent) {
   printf("stmt\n");
+  ast_node * stat = NULL;
   switch( lookahead ) {
     case SEMIC:
       match(SEMIC, fd);
       break;
     case RETURN:
       match(RETURN, fd);
-      expr(fd, parent);
+      stat = new_node(NONTERMINAL,0, STAT,0,0);
+      ast_node * return_n = new_node(RETURN,0, 0,0,0);
+      add_child_node(stat, return_n);
+      add_child_node(parent, stat);
+      expr(fd, return_n);
       match(SEMIC, fd);
       break;
     case WRITE:
       match(WRITE, fd);
-      expr(fd, parent);
+      stat = new_node(NONTERMINAL,0, STAT,0,0);
+      ast_node * w = new_node(WRITE,0, 0,0,0);
+      add_child_node(stat, w);
+      add_child_node(parent, stat);
+      expr(fd, w);
       match(SEMIC, fd);
       break;
     case READ:
       match(READ, fd);
+      stat = new_node(NONTERMINAL,0, STAT,0,0);
+      ast_node * r = new_node(READ,0, 0,0,0);
+      add_child_node(stat, r);
+      add_child_node(parent, stat);
+      ast_node * id = new_node(ID,0, 0,lexbuf,0);
+      add_child_node(r, id);
       match(ID, fd);
       match(SEMIC, fd);
       break;
     case WRITELN:
       match(WRITELN, fd);
+      stat = new_node(NONTERMINAL,0, STAT,0,0);
+      ast_node * wn = new_node(WRITELN,0, 0,0,0);
+      add_child_node(stat, wn);
+      add_child_node(parent, stat);
       match(SEMIC, fd);
       break;
     case BREAK:
       match(BREAK, fd);
+      stat = new_node(NONTERMINAL,0, STAT,0,0);
+      ast_node * b = new_node(BREAK,0, 0,0,0);
+      add_child_node(stat, b);
+      add_child_node(parent, stat);
       match(SEMIC, fd);
       break;
     case IF:
       match(IF, fd);
+      stat = new_node(NONTERMINAL,0, STAT,0,0);
+      ast_node * iff = new_node(IF,0, 0,0,0);
       match(LPAREN, fd);
-      expr(fd, parent);
+      expr(fd, iff);
       match(RPAREN, fd);
-      stmt(fd, parent);
+      stmt(fd, iff);
+      add_child_node(stat, iff);
+      add_child_node(parent, stat);
       match(ELSE, fd);
-      stmt(fd, parent);
+      ast_node * el = new_node(ELSE,0, 0,0,0);
+      stmt(fd, el);
+      if(get_num_children(el) > 0){
+        add_child_node(stat, el);
+      }
       break;
     case WHILE:
       match(WHILE, fd);
+      stat = new_node(NONTERMINAL,0, STAT,0,0);
+      ast_node * wh = new_node(WHILE,0, 0,0,0);
+      add_child_node(stat, wh);
+      add_child_node(parent, stat);
       match(LPAREN, fd);
-      expr(fd, parent);
+      expr(fd, wh);
       match(RPAREN, fd);
-      stmt(fd, parent);
+      stmt(fd, wh);
       break;
     case LBRACE:
       match(LBRACE, fd);
-      block(fd,parent);
+      ast_node * block_dec = new_node(NONTERMINAL,0, BLOCK,0,0);
+      block(fd, block_dec);
+      if(get_num_children(block_dec)> 0) {
+        add_child_node(parent, block_dec);
+      }
       break;
     default:
       expr(fd, parent);
@@ -654,7 +760,6 @@ static void match(tokenT token, FILE *fd) {
   lexer_emit(lookahead, tokenval);
   lookahead = lexan(fd);  
 }
-
 
 static ast_node * new_node(int token, int value, int grammar_sym,
                                   char * lexeme, int line_no) {

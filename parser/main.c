@@ -61,7 +61,9 @@ static char *t_strings[] = {"int", "char", "if", "num", "and", "=",
                              "return", ")", ";", "*", "while", "write",
                              "writeln", "DONE"};
 
-static char *non_term_strings[] = {"program", "vardecs", "funcdec", "vardec"};
+static char *non_term_strings[] = {"PROGRAM", "", "FUNCTION", "VAR", 
+                                   "PARAM_LIST", "PARAM", "BLOCK", 
+                                   "STMT_LIST", "STAT"};
 
 //
 // This is the function that is passed to print_ast, to print information

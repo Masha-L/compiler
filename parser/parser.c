@@ -16,7 +16,7 @@
 static void program(FILE *fd, ast_node *parent);
 static void parser_error(char *err_string);
 static void match(tokenT token, FILE* fd);
-static void program_1(FILE *fd, ast_node *parent);
+static void program_1(FILE *fd, ast_node *parent, ast_node *sibling);
 static void program_2(FILE *fd, ast_node *parent);
 static void fdl1(FILE *fd, ast_node *parent);
 static void fdl(FILE *fd, ast_node *parent);
@@ -133,7 +133,7 @@ static void program(FILE *fd, ast_node *parent) {
       else {
         parser_error("ERROR");
       }
-      program_1(fd, child);
+      program_1(fd, parent, child);
     }
     break;
     case CHAR:
@@ -157,7 +157,7 @@ static void program(FILE *fd, ast_node *parent) {
       else {
         parser_error("ERROR");
       }
-      program_1(fd, parent);
+      program_1(fd, parent, child);
     }
     break;
     default:
@@ -170,8 +170,7 @@ static void program(FILE *fd, ast_node *parent) {
   // assert(parent->symbol->grammar_symbol == ROOT);
 }
 
-static void program_1(FILE *fd, ast_node *parent) {
-  printf("program1\n");
+static void program_1(FILE *fd, ast_node *parent, ast_node *sibling) {
   switch( lookahead ) {
     case SEMIC:
       match(SEMIC, fd);
@@ -179,9 +178,15 @@ static void program_1(FILE *fd, ast_node *parent) {
     break;
     case LBRACKET:
     {
+      ast_node * lb = new_node(lookahead, 0, 0, 0, 0);
       match(LBRACKET, fd);
+      add_child_node(sibling, lb);
+      ast_node * size = new_node(lookahead, tokenval, 0, 0, 0);
       match(NUM, fd);
+      add_child_node(sibling, size);
+      ast_node * rb = new_node(lookahead, 0, 0, 0, 0);
       match(RBRACKET, fd);
+      add_child_node(sibling, rb);      
       match(SEMIC, fd);
       program(fd, parent);
     break;
@@ -550,6 +555,7 @@ static void e6_p(FILE *fd, ast_node *parent) {
       break;
     case DIV:
       match(DIV, fd);
+      lexer_emit(lookahead, tokenval);
       e7(fd,parent);
       e6_p(fd,parent);
       break;

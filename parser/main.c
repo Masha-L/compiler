@@ -53,7 +53,13 @@ int main(int argc, char *argv[]) {
 
 // this is an example of how to define output strings corresponding to 
 // different ast node state that is used by the print_ast_node function:
-static char *t_strings[] = {"int", "char", "if", "num", "and", "assign", "break",",", "/", "else", "eq", "not", "for", "id", "DONE"};
+static char *t_strings[] = {"int", "char", "if", "num", "and", "=", 
+                            "break",",", "/", "else", "==", "!", "for",
+                             "id", "{", "[", "<", "<=",
+                             "(", "-", ">", ">=", "!=", 
+                             "||",".", "+", "}", "]", "read",
+                             "return", ")", ";", "*", "while", "write",
+                             "writeln", "DONE"};
 
 static char *non_term_strings[] = {"program", "vardecs", "funcdec", "vardec"};
 

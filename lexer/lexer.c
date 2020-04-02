@@ -98,7 +98,6 @@ int lexan(FILE *fd) {
         return ASSIGN;
       case '/':
         if ((c = fgetc(fd)) != '/' && c != '*') {
-          src_charno += 1;
           return DIV;
         }
         // if  comment

@@ -1,3 +1,4 @@
+char id[20];
 int afunction(int a, int b) {
   return a+b;
 }

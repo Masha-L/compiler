@@ -1,5 +1,4 @@
-
-main() {
+int main() {
 
   write 8+9;
 }

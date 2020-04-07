@@ -1,0 +1,1015 @@
+program
+MATCH: CHAR
+MATCH: ID.id
+MATCH: LBRACKET
+MATCH: NUM.20
+MATCH: RBRACKET
+MATCH: SEMIC
+program
+MATCH: INT
+MATCH: ID.afunction
+program2
+MATCH: LPAREN
+fdl1
+pdl
+MATCH: INT
+MATCH: ID.a
+pdl1
+pdl2
+MATCH: COMMA
+pdl
+MATCH: INT
+MATCH: ID.b
+pdl1
+MATCH: LBRACKET
+MATCH: RBRACKET
+pdl2
+MATCH: RPAREN
+MATCH: LBRACE
+block
+vdl
+stmt_list
+stmt
+MATCH: RETURN
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: ID.a
+e5_p
+MATCH: PLUS
+e6
+e7
+e8
+MATCH: ID.b
+MATCH: SEMIC
+stmt_list1
+MATCH: RBRACE
+fdl
+MATCH: INT
+MATCH: ID.main
+MATCH: LPAREN
+fdl1
+pdl
+MATCH: RPAREN
+MATCH: LBRACE
+block
+vdl
+MATCH: INT
+MATCH: ID.x
+vdl1
+MATCH: SEMIC
+vdl
+MATCH: INT
+MATCH: ID.y
+vdl1
+MATCH: SEMIC
+vdl
+MATCH: CHAR
+MATCH: ID.z
+vdl1
+MATCH: SEMIC
+vdl
+MATCH: INT
+MATCH: ID.arr
+vdl1
+MATCH: LBRACKET
+MATCH: NUM.10
+MATCH: RBRACKET
+MATCH: SEMIC
+vdl
+MATCH: INT
+MATCH: ID.i
+vdl1
+MATCH: SEMIC
+vdl
+stmt_list
+stmt
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: ID.i
+e0_p
+MATCH: ASSIGN
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: NUM.0
+MATCH: SEMIC
+stmt_list1
+stmt_list
+stmt
+MATCH: WHILE
+MATCH: LPAREN
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: NUM.1
+MATCH: RPAREN
+stmt
+MATCH: LBRACE
+block
+vdl
+stmt_list
+stmt
+MATCH: IF
+MATCH: LPAREN
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: ID.i
+e4_p
+MATCH: MOREEQ
+e5
+e6
+e7
+e8
+MATCH: NUM.10
+MATCH: RPAREN
+stmt
+MATCH: LBRACE
+block
+vdl
+stmt_list
+stmt
+MATCH: BREAK
+MATCH: SEMIC
+stmt_list1
+MATCH: RBRACE
+MATCH: ELSE
+stmt
+MATCH: LBRACE
+block
+vdl
+stmt_list
+stmt
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: ID.i
+e0_p
+MATCH: ASSIGN
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: ID.i
+MATCH: SEMIC
+stmt_list1
+MATCH: RBRACE
+stmt_list1
+stmt_list
+stmt
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: ID.arr
+e8_p
+MATCH: LBRACKET
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: ID.i
+MATCH: RBRACKET
+e0_p
+MATCH: ASSIGN
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: ID.i
+MATCH: SEMIC
+stmt_list1
+stmt_list
+stmt
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: ID.i
+e0_p
+MATCH: ASSIGN
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: ID.i
+e5_p
+MATCH: PLUS
+e6
+e7
+e8
+MATCH: NUM.1
+MATCH: SEMIC
+stmt_list1
+MATCH: RBRACE
+stmt_list1
+stmt_list
+stmt
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: ID.x
+e0_p
+MATCH: ASSIGN
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: NUM.1
+e5_p
+MATCH: PLUS
+e6
+e7
+e8
+MATCH: NUM.2
+e5_p
+MATCH: MINUS
+e6
+e7
+e8
+MATCH: NUM.3
+e6_p
+MATCH: STAR
+e7
+e8
+MATCH: NUM.4
+e6_p
+MATCH: DIV
+e7
+e8
+MATCH: NUM.5
+MATCH: SEMIC
+stmt_list1
+stmt_list
+stmt
+MATCH: READ
+MATCH: ID.y
+MATCH: SEMIC
+stmt_list1
+stmt_list
+stmt
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: ID.y
+e0_p
+MATCH: ASSIGN
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: ID.afunction
+e8_p
+MATCH: LPAREN
+expr_list
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: ID.x
+expr_list_p
+MATCH: COMMA
+expr_list
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: ID.y
+expr_list_p
+MATCH: RPAREN
+MATCH: SEMIC
+stmt_list1
+stmt_list
+stmt
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: ID.z
+e0_p
+MATCH: ASSIGN
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: NUM.97
+MATCH: SEMIC
+stmt_list1
+stmt_list
+stmt
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: ID.z
+e0_p
+MATCH: ASSIGN
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: NUM.9
+MATCH: SEMIC
+stmt_list1
+stmt_list
+stmt
+MATCH: WRITELN
+MATCH: SEMIC
+stmt_list1
+stmt_list
+stmt
+MATCH: IF
+MATCH: LPAREN
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: ID.x
+e3_p
+MATCH: EQ
+e4
+e5
+e6
+e7
+e8
+MATCH: ID.y
+MATCH: RPAREN
+stmt
+MATCH: LBRACE
+block
+vdl
+stmt_list
+stmt
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: ID.x
+e0_p
+MATCH: ASSIGN
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: NUM.1
+e5_p
+MATCH: PLUS
+e6
+e7
+e8
+MATCH: NUM.2
+e5_p
+MATCH: MINUS
+e6
+e7
+e8
+MATCH: NUM.3
+e6_p
+MATCH: STAR
+e7
+e8
+MATCH: NUM.4
+e6_p
+MATCH: DIV
+e7
+e8
+MATCH: NUM.5
+MATCH: SEMIC
+stmt_list1
+MATCH: RBRACE
+MATCH: ELSE
+stmt
+MATCH: LBRACE
+block
+vdl
+stmt_list
+stmt
+MATCH: WRITE
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: ID.x
+MATCH: SEMIC
+stmt_list1
+MATCH: RBRACE
+stmt_list1
+stmt_list
+stmt
+MATCH: IF
+MATCH: LPAREN
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+MATCH: NOT
+e7
+e8
+MATCH: ID.x
+e1_p
+MATCH: e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: LPAREN
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: ID.z
+e4_p
+MATCH: LESSEQ
+e5
+e6
+e7
+e8
+MATCH: NUM.98
+e2_p
+MATCH: AND
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: ID.arr
+e8_p
+MATCH: LBRACKET
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: NUM.2
+MATCH: RBRACKET
+e3_p
+MATCH: EQ
+e4
+e5
+e6
+e7
+e8
+MATCH: NUM.2
+MATCH: RPAREN
+MATCH: RPAREN
+stmt
+MATCH: LBRACE
+block
+vdl
+stmt_list
+stmt
+MATCH: WRITE
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: ID.arr
+e8_p
+MATCH: LBRACKET
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: NUM.2
+MATCH: RBRACKET
+MATCH: SEMIC
+stmt_list1
+MATCH: RBRACE
+MATCH: ELSE
+stmt
+MATCH: LBRACE
+block
+vdl
+stmt_list
+stmt
+MATCH: WRITE
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: ID.arr
+e8_p
+MATCH: LBRACKET
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: NUM.1
+MATCH: RBRACKET
+MATCH: SEMIC
+stmt_list1
+MATCH: RBRACE
+stmt_list1
+MATCH: RBRACE
+fdl
+MATCH: DONE
+**********************************************
+                                                                                        ]
+                                                                                       /
+                                                                                        num.1
+                                                                                       /
+                                                                                        [
+                                                                                       /
+                                                                                id.arr
+                                                                               /
+                                                                        write
+                                                                       /
+                                                                STAT
+                                                               /
+                                                        STMT_LIST
+                                                       /
+                                                BLOCK
+                                               /
+                                        else
+                                       /
+                                                                                        ]
+                                                                                       /
+                                                                                        num.2
+                                                                                       /
+                                                                                        [
+                                                                                       /
+                                                                                id.arr
+                                                                               /
+                                                                        write
+                                                                       /
+                                                                STAT
+                                                               /
+                                                        STMT_LIST
+                                                       /
+                                                BLOCK
+                                               /
+                                                                        num.2
+                                                                       /
+                                                                                ]
+                                                                               /
+                                                                                num.2
+                                                                               /
+                                                                                [
+                                                                               /
+                                                                        id.arr
+                                                                       /
+                                                                ==
+                                                               /
+                                                                        num.98
+                                                                       /
+                                                                        id.z
+                                                                       /
+                                                                <=
+                                                               /
+                                                        and
+                                                       /
+                                                                id.x
+                                                               /
+                                                        !
+                                                       /
+                                                ||
+                                               /
+                                        if
+                                       /
+                                STAT
+                               /
+                                                                                id.x
+                                                                               /
+                                                                        write
+                                                                       /
+                                                                STAT
+                                                               /
+                                                        STMT_LIST
+                                                       /
+                                                BLOCK
+                                               /
+                                        else
+                                       /
+                                                                                                        num.5
+                                                                                                       /
+                                                                                                        num.4
+                                                                                                       /
+                                                                                                /
+                                                                                               /
+                                                                                                num.3
+                                                                                               /
+                                                                                        *
+                                                                                       /
+                                                                                        num.2
+                                                                                       /
+                                                                                -
+                                                                               /
+                                                                                num.1
+                                                                               /
+                                                                        +
+                                                                       /
+                                                                        id.x
+                                                                       /
+                                                                =
+                                                               /
+                                                        STMT_LIST
+                                                       /
+                                                BLOCK
+                                               /
+                                                        id.y
+                                                       /
+                                                        id.x
+                                                       /
+                                                ==
+                                               /
+                                        if
+                                       /
+                                STAT
+                               /
+                                        writeln
+                                       /
+                                STAT
+                               /
+                                        num.9
+                                       /
+                                        id.z
+                                       /
+                                =
+                               /
+                                        num.97
+                                       /
+                                        id.z
+                                       /
+                                =
+                               /
+                                                        id.y
+                                                       /
+                                                        id.x
+                                                       /
+                                                EXPR_LIST
+                                               /
+                                        id.afunction
+                                       /
+                                        id.y
+                                       /
+                                =
+                               /
+                                                id.y
+                                               /
+                                        read
+                                       /
+                                STAT
+                               /
+                                                                        num.5
+                                                                       /
+                                                                        num.4
+                                                                       /
+                                                                /
+                                                               /
+                                                                num.3
+                                                               /
+                                                        *
+                                                       /
+                                                        num.2
+                                                       /
+                                                -
+                                               /
+                                                num.1
+                                               /
+                                        +
+                                       /
+                                        id.x
+                                       /
+                                =
+                               /
+                                                                                num.1
+                                                                               /
+                                                                                id.i
+                                                                               /
+                                                                        +
+                                                                       /
+                                                                        id.i
+                                                                       /
+                                                                =
+                                                               /
+                                                                        id.i
+                                                                       /
+                                                                                ]
+                                                                               /
+                                                                                id.i
+                                                                               /
+                                                                                [
+                                                                               /
+                                                                        id.arr
+                                                                       /
+                                                                =
+                                                               /
+                                                                                                        id.i
+                                                                                                       /
+                                                                                                        id.i
+                                                                                                       /
+                                                                                                =
+                                                                                               /
+                                                                                        STMT_LIST
+                                                                                       /
+                                                                                BLOCK
+                                                                               /
+                                                                        else
+                                                                       /
+                                                                                                        break
+                                                                                                       /
+                                                                                                STAT
+                                                                                               /
+                                                                                        STMT_LIST
+                                                                                       /
+                                                                                BLOCK
+                                                                               /
+                                                                                        num.10
+                                                                                       /
+                                                                                        id.i
+                                                                                       /
+                                                                                >=
+                                                                               /
+                                                                        if
+                                                                       /
+                                                                STAT
+                                                               /
+                                                        STMT_LIST
+                                                       /
+                                                BLOCK
+                                               /
+                                                num.1
+                                               /
+                                        while
+                                       /
+                                STAT
+                               /
+                                        num.0
+                                       /
+                                        id.i
+                                       /
+                                =
+                               /
+                        STMT_LIST
+                       /
+                                id.i
+                               /
+                                int
+                               /
+                        VAR
+                       /
+                                ]
+                               /
+                                num.10
+                               /
+                                [
+                               /
+                                id.arr
+                               /
+                                int
+                               /
+                        VAR
+                       /
+                                id.z
+                               /
+                                char
+                               /
+                        VAR
+                       /
+                                id.y
+                               /
+                                int
+                               /
+                        VAR
+                       /
+                                id.x
+                               /
+                                int
+                               /
+                        VAR
+                       /
+                BLOCK
+               /
+                id.main
+               /
+                int
+               /
+        FUNCTION
+       /
+                                                        id.b
+                                                       /
+                                                        id.a
+                                                       /
+                                                +
+                                               /
+                                        return
+                                       /
+                                STAT
+                               /
+                        STMT_LIST
+                       /
+                BLOCK
+               /
+                                id.a
+                               /
+                                int
+                               /
+                        PARAM
+                       /
+                                ]
+                               /
+                                [
+                               /
+                                id.b
+                               /
+                                int
+                               /
+                        PARAM
+                       /
+                PARAM_LIST
+               /
+                id.afunction
+               /
+                int
+               /
+        FUNCTION
+       /
+                ]
+               /
+                num.20
+               /
+                [
+               /
+                id.id
+               /
+                char
+               /
+        VAR
+       /
+PROGRAM

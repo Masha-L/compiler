@@ -64,6 +64,12 @@ ast_info *create_new_ast_node_info(int token, int value, int grammar_sym,
 int add_child_node(ast_node *parent, ast_node *child) {
 
   int n;
+  if(parent == NULL) {
+    printf("saf");
+  }
+    if(child == NULL) {
+    printf("asd");
+  }
   if (parent == NULL || child == NULL) {
         printf("ERROR: passing unallocated parent of child to add_node\n"); 
         return -1;

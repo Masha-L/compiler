@@ -42,7 +42,8 @@
 #define BLOCK		  407
 #define STAT_LIST	  408
 #define STAT 		  409
-#define END_AST_SYM   409       // used to specify end of valid range
+#define EXPR_LIST	  410
+#define END_AST_SYM   410       // used to specify end of valid range
 
 
 // add global variable definitions: 

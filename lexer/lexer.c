@@ -104,6 +104,8 @@ int lexan(FILE *fd) {
         skipComment(c, fd);
         continue;
       case '\n':
+        src_lineno+=1;
+        continue;
       case ' ':
       case '\t':
         continue;

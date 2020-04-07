@@ -63,7 +63,7 @@ static char *t_strings[] = {"int", "char", "if", "num", "and", "=",
 
 static char *non_term_strings[] = {"PROGRAM", "", "FUNCTION", "VAR", 
                                    "PARAM_LIST", "PARAM", "BLOCK", 
-                                   "STMT_LIST", "STAT"};
+                                   "STMT_LIST", "STAT", "EXPR_LIST"};
 
 //
 // This is the function that is passed to print_ast, to print information

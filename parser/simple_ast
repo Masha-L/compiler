@@ -1,0 +1,14 @@
+from nltk import Tree
+
+ast = Tree.parse("(PROGRAM((FUNCTION(char\
+)({\
+)((BLOCK((STMT_LIST((STAT((writeln((}(and\
+)(and\
+))\
+))\
+))\
+))\
+))\
+))\
+))\
+")

@@ -1,0 +1,57 @@
+program
+MATCH: INT
+MATCH: ID.main
+program2
+MATCH: LPAREN
+fdl1
+pdl
+MATCH: RPAREN
+MATCH: LBRACE
+block
+vdl
+stmt_list
+stmt
+MATCH: WRITE
+expr
+e1
+e2
+e3
+e4
+e5
+e6
+e7
+e8
+MATCH: NUM.8
+e5_p
+MATCH: PLUS
+e6
+e7
+e8
+MATCH: NUM.9
+MATCH: SEMIC
+stmt_list1
+MATCH: RBRACE
+fdl
+MATCH: DONE
+**********************************************
+                                                        num.9
+                                                       /
+                                                        num.8
+                                                       /
+                                                +
+                                               /
+                                        write
+                                       /
+                                STAT
+                               /
+                        STMT_LIST
+                       /
+                BLOCK
+               /
+                id.main
+               /
+                int
+               /
+        FUNCTION
+       /
+PROGRAM

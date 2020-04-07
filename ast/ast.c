@@ -290,3 +290,20 @@ void  destroy_ast(ast *tree) {
   if(tree->root != NULL) { free(tree->root); }
 }
 
+ast_node * new_node(int token, int value, int grammar_sym,
+                                  char * lexeme, int line_no) {
+  ast_info *s = create_new_ast_node_info(token, value, grammar_sym, lexeme, line_no);
+  ast_node *n = create_ast_node(s);
+  return n;
+}
+
+ast_node * new_node_with_ch(int token, int value, int grammar_sym,
+                                  char * lexeme, int line_no, ast_node* l_ch,
+                                  ast_node* r_ch) {
+  ast_info *s = create_new_ast_node_info(token, value, grammar_sym, lexeme, line_no);
+  ast_node *n = create_ast_node(s);
+  add_child_node(n, l_ch);
+  add_child_node(n, r_ch);
+  return n;
+}
+

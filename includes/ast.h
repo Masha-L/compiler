@@ -141,8 +141,14 @@ ast_info *create_new_ast_node_info(int token, int value, int grammar_sym,
  * returns: pointer to new ast_node with token as symbol field
  *          or NULL on error
  */
-ast_node *create_ast_node(ast_info *token) ;
-
+ast_node *create_ast_node(ast_info *token);
+/*allows you to create a new node with left and right children*/
+ast_node * new_node_with_ch(int token, int value, int grammar_sym,
+                                  char * lexeme, int line_no, ast_node* l_ch,
+                                  ast_node* r_ch);
+/*simplified procedure of creating a node*/
+ast_node * new_node(int token, int value, int grammar_sym,
+                                  char * lexeme, int line_no);
 /*
  * add a new child node to the current ast_node
  *   child: pointer to the ast_node to add

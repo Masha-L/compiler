@@ -30,6 +30,7 @@ static void vdl1(FILE *fd, ast_node *parent, ast_node *sibling);
 static void stmt_list(FILE *fd, ast_node *parent);
 static void stmt(FILE *fd, ast_node *parent);
 static void stmt_list1(FILE *fd, ast_node *parent);
+static void expression_rec(FILE * fd);
 static ast_node * expr(FILE *fd);
 static void expr_list_p(FILE *fd, ast_node *parent);
 static void expr_list(FILE *fd, ast_node *parent);
@@ -53,12 +54,7 @@ static ast_node *e3_h(FILE *fd);
 static ast_node *e4_h(FILE *fd);
 static ast_node *e5_h(FILE *fd);
 static ast_node *e6_h(FILE *fd);
-static ast_node * new_node(int token, int value, int grammar_sym,
-                                  char * lexeme, int line_no);
-static ast_node * new_node_with_ch(int token, int value, int grammar_sym,
-                                  char * lexeme, int line_no, ast_node* l_ch,
-                                  ast_node* r_ch);
-
+static ast_node *e7_h(tokenT token, FILE* fd);
 tokenT lookahead;  // stores next token returned by lexer
                 // you may need to change its type to match your implementation
                 
@@ -97,14 +93,14 @@ void parse(FILE *fd)  {
 /**************************************************************************/
 static void parser_error(char *err_string, tokenT expected, tokenT got) {
   if(err_string) {
-    printf("Line %d %s\n", src_lineno, err_string);
+    printf("\n Error at line %d: %s ", src_lineno, err_string);
   }
   if(expected!=-1) {
     printf("Expected ");
     lexer_emit(expected, tokenval);
     printf("But got ");
     lexer_emit(lookahead, tokenval);
-    printf("instead\n");
+    printf("\n");
   }
   exit(1);
 }  
@@ -137,8 +133,13 @@ static void program(FILE *fd, ast_node *parent) {
       program_h(CHAR, fd, parent);
     break;
     default:
-      lexer_emit(lookahead,tokenval);
-      parser_error("Your program starts with invalid symbol", -1, -1);
+      while(lookahead != CHAR && lookahead != INT) {
+        warning("Expected a different value at the begining of the program", -1, -1);
+        lookahead = lexan(fd);
+        if(lookahead == DONE) {
+          parser_error("Reached the end of the file", -1, -1);
+        }
+      }
       break;
   }
 }
@@ -518,9 +519,21 @@ static ast_node * expr(FILE *fd) {
        return l_ch;
     break;
     default:
-      parser_error("UNEXPECTED SYMBOL AT EXPR", -1, -1);
+    expression_rec(fd);
+    return expr(fd);
   }
   return NULL;
+}
+
+static void expression_rec(FILE * fd) {
+  while( lookahead != NOT && lookahead != ID && lookahead != NUM
+          && lookahead != LPAREN && lookahead != MINUS) {
+      warning("Expected a different symbol at expression", -1,-1);
+      lookahead = lexan(fd);
+      if(lookahead == DONE){
+        parser_error("Reached the end of the file.", -1, -1);
+      }
+    }
 }
 
 static ast_node * e0_p(FILE *fd) {
@@ -747,35 +760,24 @@ static ast_node * e6_p(FILE *fd) {
 
 static ast_node * e7(FILE *fd) {
   printf("e7\n");
-  ast_node * n = NULL;
   switch(lookahead) {
     case NOT:
-      match(NOT, fd);
-      n = new_node(NOT,0,0,0,0);
-      if(lookahead == NOT || lookahead == MINUS || lookahead == NUM
-        || lookahead == LPAREN || lookahead == ID)
-      {
-        add_child_node(n, e7(fd));
-        return n;
-      }
-      parser_error("NOT VALID IN e7", -1, -1);
-    break;
+      return e7_h(NOT, fd);
     case MINUS:
-      match(MINUS, fd);
-      n = new_node(MINUS,0,0,0,0);
-      if(lookahead == NOT || lookahead == MINUS || lookahead == NUM
-        || lookahead == LPAREN || lookahead == ID)
-      {
-        add_child_node(n, e7(fd));
-        return n;
-      }
-      parser_error("NOT VALID IN e7", -1, -1);
-    break;
+      return e7_h(MINUS, fd);
     default:
       return e8(fd);
     break;
   }
   return NULL;
+}
+
+static ast_node *e7_h(tokenT token, FILE* fd) {
+  match(token, fd);
+  ast_node * n = new_node(token,0,0,0,0);
+  expression_rec(fd);
+  add_child_node(n, e7(fd));
+  return n;
 }
 
 static ast_node * e8(FILE *fd) {
@@ -799,7 +801,14 @@ static ast_node * e8(FILE *fd) {
       }
       break;
     default:
-      parser_error("Error!", -1, -1);
+      while( lookahead != ID && lookahead != NUM && lookahead != LPAREN) {
+        warning("Expected a different symbol at expression", -1,-1);
+        lookahead = lexan(fd);
+        if(lookahead == DONE){
+          parser_error("Reached the end of the file.", -1, -1);
+        }
+      }
+      e8(fd);
     break;
   }
   return n;
@@ -865,21 +874,4 @@ static void match(tokenT token, FILE *fd) {
   printf("MATCH: ");
   lexer_emit(lookahead, tokenval);
   lookahead = lexan(fd);  
-}
-
-static ast_node * new_node(int token, int value, int grammar_sym,
-                                  char * lexeme, int line_no) {
-  ast_info *s = create_new_ast_node_info(token, value, grammar_sym, lexeme, line_no);
-  ast_node *n = create_ast_node(s);
-  return n;
-}
-
-static ast_node * new_node_with_ch(int token, int value, int grammar_sym,
-                                  char * lexeme, int line_no, ast_node* l_ch,
-                                  ast_node* r_ch) {
-  ast_info *s = create_new_ast_node_info(token, value, grammar_sym, lexeme, line_no);
-  ast_node *n = create_ast_node(s);
-  add_child_node(n, l_ch);
-  add_child_node(n, r_ch);
-  return n;
 }

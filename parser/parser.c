@@ -20,10 +20,12 @@ static void fdl1(FILE *fd, ast_node *parent, ast_node *sibling);
 static void fdl(FILE *fd, ast_node *parent);
 static void fdl_h(tokenT v_type, FILE *fd, ast_node *parent);
 static void pdl(FILE *fd, ast_node *parent);
+static void pdl_h(tokenT v_type, FILE *fd, ast_node *parent);
 static void pdl1(FILE *fd, ast_node *parent, ast_node *sibling);
 static void pdl2(FILE *fd, ast_node *parent);
 static void block(FILE *fd, ast_node *parent);
 static void vdl(FILE *fd, ast_node *parent);
+static void vdl_h(tokenT v_type, FILE *fd, ast_node *parent);
 static void vdl1(FILE *fd, ast_node *parent, ast_node *sibling);
 static void stmt_list(FILE *fd, ast_node *parent);
 static void stmt(FILE *fd, ast_node *parent);
@@ -263,37 +265,28 @@ static void fdl_h(tokenT v_type, FILE *fd, ast_node *parent){
 
 static void pdl(FILE *fd, ast_node *parent) {
   printf("pdl\n");
-  ast_node *child = NULL;
   switch( lookahead ) {
     case INT: 
-    {
-      child = new_node(NONTERMINAL,0, PAR_DEC,0,0);
-      ast_node *type = new_node(lookahead, 0, 0, 0, 0);
-      match(INT, fd);
-      add_child_node(child, type);
-      ast_node *id = new_node(lookahead, 0, 0, lexbuf, 0);
-      match(ID, fd);
-      add_child_node(child, id);
-      pdl1(fd, parent, child);
-      add_child_node(parent, child);
+      pdl_h(INT, fd, parent);
       break;
-    }
     case CHAR:
-    {
-      child = new_node(NONTERMINAL,0, PAR_DEC,0,0);
-      ast_node *type = new_node(lookahead, 0, 0, 0, 0);
-      match(CHAR, fd); 
-      add_child_node(child, type);
-      ast_node *id = new_node(lookahead, 0, 0, lexbuf, 0);
-      match(ID, fd);
-      add_child_node(child, id);
-      pdl1(fd, parent, child);
-      add_child_node(parent, child);
-      break; 
-    }     
+      pdl_h(CHAR, fd, parent);
+      break;  
     default:
       break;
   }
+}
+
+static void pdl_h(tokenT v_type, FILE *fd, ast_node *parent){
+  ast_node * child = new_node(NONTERMINAL,0, PAR_DEC,0,0);
+  ast_node * type = new_node(lookahead, 0, 0, 0, 0);
+  match(v_type, fd); 
+  add_child_node(child, type);
+  ast_node *id = new_node(lookahead, 0, 0, lexbuf, 0);
+  match(ID, fd);
+  add_child_node(child, id);
+  pdl1(fd, parent, child);
+  add_child_node(parent, child);
 }
 
 static void pdl1(FILE *fd, ast_node *parent, ast_node *sibling) {
@@ -331,46 +324,37 @@ static void pdl2(FILE *fd, ast_node *parent) {
 static void block(FILE *fd, ast_node *parent) {
   printf("block\n");
   vdl(fd, parent);
-  ast_node * stat_list = new_node(NONTERMINAL,0, STAT_LIST,0,0);
+  ast_node * stat_list = new_node(NONTERMINAL, 0, STAT_LIST,0,0);
   stmt_list(fd, stat_list);
-  if(get_num_children(stat_list)> 0) {
+  if(get_num_children(stat_list) > 0) {
       add_child_node(parent, stat_list);
   }
 }
 
 static void vdl(FILE *fd, ast_node *parent) {
   printf("vdl\n");
-  ast_node *child = NULL;
   switch( lookahead ) {
     case INT:
-    {
-      child = new_node(NONTERMINAL,0, VAR_DEC,0,0);
-      ast_node *type = new_node(lookahead, 0, 0, 0, 0);
-      match(INT, fd);
-      add_child_node(child, type);
-      ast_node *id = new_node(lookahead, 0, 0, lexbuf, 0);
-      match(ID, fd);
-      add_child_node(child, id);
-      add_child_node(parent, child);
-      vdl1(fd, parent, child);
-      break;
-    }    
+      vdl_h(INT, fd, parent);
+      break;  
     case CHAR:
-    {
-      child = new_node(NONTERMINAL,0, VAR_DEC,0,0);
-      ast_node *type = new_node(lookahead, 0, 0, 0, 0);
-      match(CHAR, fd);
-      add_child_node(child, type);
-      ast_node *id = new_node(lookahead, 0, 0, lexbuf, 0);
-      match(ID, fd);
-      add_child_node(child, id);
-      add_child_node(parent, child);
-      vdl1(fd, parent, child);
-      break;
-    }
+      vdl_h(CHAR, fd, parent);
+      break;  
     default:
       break;
   }
+}
+
+static void vdl_h(tokenT v_type, FILE *fd, ast_node *parent) {
+  ast_node *child = new_node(NONTERMINAL,0, VAR_DEC,0,0);
+  ast_node *type = new_node(lookahead, 0, 0, 0, 0);
+  match(v_type, fd);
+  add_child_node(child, type);
+  ast_node *id = new_node(lookahead, 0, 0, lexbuf, 0);
+  match(ID, fd);
+  add_child_node(child, id);
+  add_child_node(parent, child);
+  vdl1(fd, parent, child);
 }
 
 static void vdl1(FILE *fd, ast_node *parent, ast_node *sibling) {
@@ -396,7 +380,15 @@ static void vdl1(FILE *fd, ast_node *parent, ast_node *sibling) {
       break;
     }
     default:
-      parser_error("VDL1: should end here.", -1, -1);
+      while(LBRACKET != lookahead && SEMIC != lookahead) {
+        warning("Expected a different value", LBRACKET, lookahead);
+        warning("Expected a different value", SEMIC, lookahead);
+        lookahead = lexan(fd);
+        if(lookahead == DONE) {
+          parser_error("Reached the end of the file.", -1, -1);
+        }
+      }
+      vdl1(fd, parent, sibling);
   }
 }
 

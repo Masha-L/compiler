@@ -1,4 +1,4 @@
 int main() {
 
-  write 8+9;
+  write (6-7)+5;
 }
